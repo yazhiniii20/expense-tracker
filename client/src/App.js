@@ -1,47 +1,39 @@
-import React, { useState } from 'react';
-import Register from './Register';
-import Login from './Login';
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import Dashboard from './Dashboard';
+import ExpenseList from './ExpenseList';
+import ExpenseForm from './ExpenseForm';
+import Budget from './Budget';
+import Login from './Login';   // as before
+import Register from './Register'; // as before
 import './AuthForm.css';
 
-export default function App() {
-  const [page, setPage] = useState('login');
-  const [user, setUser] = useState(null);
+function Navbar() {
+  return (
+    <nav style={{
+      background: 'var(--steel-teal)',
+      padding: '13px 0', marginBottom: '24px', textAlign: 'center'
+    }}>
+      <Link to="/" style={{ color: '#fff', margin: '0 22px', fontWeight: 500, textDecoration: 'none' }}>Dashboard</Link>
+      <Link to="/expenses" style={{ color: '#fff', margin: '0 22px', fontWeight: 500, textDecoration: 'none' }}>Expenses</Link>
+      <Link to="/add" style={{ color: '#fff', margin: '0 22px', fontWeight: 500, textDecoration: 'none' }}>Add Expense</Link>
+      <Link to="/budget" style={{ color: '#fff', margin: '0 22px', fontWeight: 500, textDecoration: 'none' }}>Budget</Link>
+    </nav>
+  );
+}
 
-  if (user) {
-    return (
-      <div className="auth-container">
-        <div className="auth-card" style={{ textAlign: 'center' }}>
-          <h2>Welcome, {user}!</h2>
-          <button className="auth-btn" onClick={() => {
-            setUser(null);
-            localStorage.removeItem('token');
-          }}>Logout</button>
-        </div>
-      </div>
-    );
-  }
+export default function App() {
+  // Use your auth logic as before; render Dashboard etc if authenticated
 
   return (
-    <div className="auth-container">
-      <div className="auth-card">
-        {page === 'login' ? (
-          <>
-            <Login onLogin={setUser} />
-            <p style={{ textAlign: 'center' }}>
-              Don&apos;t have an account?
-              <button className="auth-link-btn" type="button" onClick={() => setPage('register')}>Register</button>
-            </p>
-          </>
-        ) : (
-          <>
-            <Register onRegister={() => setPage('login')} />
-            <p style={{ textAlign: 'center' }}>
-              Already have an account?
-              <button className="auth-link-btn" type="button" onClick={() => setPage('login')}>Login</button>
-            </p>
-          </>
-        )}
-      </div>
-    </div>
+    <BrowserRouter>
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<Dashboard />} />
+        <Route path="/expenses" element={<ExpenseList />} />
+        <Route path="/add" element={<ExpenseForm />} />
+        <Route path="/budget" element={<Budget />} />
+        {/* ...other auth routes */}
+      </Routes>
+    </BrowserRouter>
   );
 }

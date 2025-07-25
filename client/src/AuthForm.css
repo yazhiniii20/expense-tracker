@@ -11,7 +11,25 @@
     align-items: center;
     justify-content: center;
   }
-  
+  .page-container {
+    min-height: 100vh;
+    background: var(--light-blue);
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 50px 0;
+  }
+  .card {
+    background: var(--blue-gray);
+    border-radius: 18px;
+    box-shadow: 0 6px 32px 0 rgba(11,46,51,0.13);
+    padding: 2.5rem 2rem;
+    min-width: 340px;
+    max-width: 800px;
+    width: 100%;
+    margin: 0 20px;
+  }
+
   .auth-card {
     background: var(--blue-gray);
     box-shadow: 0 4px 24px 0 rgba(11,46,51,0.13);
@@ -84,4 +102,91 @@
   .error-message {
     color: #bb2222;
   }
-    
+  
+  .input, .select {
+    padding: 12px;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    border-radius: 8px;
+    border: none;
+    background: var(--light-blue);
+    color: var(--midnight-blue);
+    outline: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+  }
+  
+  .btn {
+    background: var(--steel-teal);
+    color: #fff;
+    font-weight: 600;
+    font-size: 1rem;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 0;
+    margin-bottom: 0.6rem;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  
+  .btn:hover {
+    background: var(--midnight-blue);
+  }
+  
+  .table {
+    width: 100%;
+    margin-top: 18px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--light-blue);
+    font-size: 0.99rem;
+  }
+  
+  .table th, .table td {
+    padding: 11px 13px;
+    text-align: left;
+  }
+  
+  .table th {
+    background: var(--steel-teal);
+    color: #fff;
+    font-weight: 600;
+  }
+  
+  .table tr:nth-child(odd) {
+    background: #e9f7fa;
+  }
+  
+  .action-btn {
+    background: var(--blue-gray);
+    color: var(--midnight-blue);
+    padding: 7px 13px;
+    border: none;
+    border-radius: 7px;
+    margin-left: 7px;
+    cursor: pointer;
+    transition: background .12s;
+  }
+  
+  .action-btn:hover {
+    background: var(--steel-teal);
+    color: #fff;
+  }
+  
+  .progress-bar-bg {
+    width: 100%;
+    background: #d3ebee;
+    border-radius: 9px;
+    height: 18px;
+    margin-bottom: 1.1rem;
+  }
+  
+  .progress-bar-fill {
+    background: var(--steel-teal);
+    border-radius: 9px;
+    height: 100%;
+    transition: width .4s;
+  }
+  
+  @media (max-width: 650px) {
+    .card { min-width: unset; max-width: 96vw; padding: 1.2rem 0.3rem; }
+  }
