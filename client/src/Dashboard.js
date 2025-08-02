@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './AuthForm.css';
 
-export default function Dashboard() {
+export default function Dashboard({ username }) {
   const [expenses, setExpenses] = useState([]);
   const [total, setTotal] = useState(0);
 
@@ -26,6 +26,7 @@ export default function Dashboard() {
   return (
     <div className="page-container">
       <div className="card">
+     <h1>{username && <p style={{ fontWeight: 600, marginBottom: 20 }}>Welcome, <b>{username}</b>!</p>}</h1> 
         <h2>Dashboard</h2>
         <div style={{
           background: "#fff",
