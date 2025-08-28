@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-
+// import { Link } from 'react-router-dom';
+import './AuthForm.css';
 export default function Login({ onLogin }) {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [message, setMessage] = useState('');
@@ -60,7 +61,12 @@ export default function Login({ onLogin }) {
       >
         Login
       </button>
-      {message && (
+      {/* <p style={{ textAlign: 'center', marginTop: '0.5rem' }}>
+  <Link to="/forgot-password" style={{ color: 'var(--midnight-blue)', textDecoration: 'underline' }}>
+    Forgot Password?
+  </Link>
+</p> */}
+          {message && (
         <div className="auth-message error-message">{message}</div>
       )}
     </form>

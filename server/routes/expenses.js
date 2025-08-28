@@ -78,7 +78,7 @@ router.delete('/:id', auth, async (req, res) => {
     if (!expense) return res.status(404).json({ message: 'Expense not found' });
     if (expense.user.toString() !== req.userId) return res.status(403).json({ message: 'Not authorized' });
 
-    await expense.remove();
+    await Expense.findByIdAndDelete(id);
     res.json({ message: 'Expense deleted' });
   } catch (err) {
     console.error('Delete expense error:', err);

@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import './AuthForm.css';
 
 export default function Dashboard({ username }) {
   const [expenses, setExpenses] = useState([]);
   const [total, setTotal] = useState(0);
+  const [categoryData, setCategoryData] = useState([]);
 
   useEffect(() => {
     async function fetchExpenses() {
@@ -15,19 +17,37 @@ export default function Dashboard({ username }) {
         });
         setExpenses(res.data);
         setTotal(res.data.reduce((sum, exp) => sum + exp.amount, 0));
+
+        // group by category
+        const grouped = res.data.reduce((acc, exp) => {
+          acc[exp.category] = (acc[exp.category] || 0) + exp.amount;
+          return acc;
+        }, {});
+
+        const formatted = Object.keys(grouped).map(cat => ({
+          name: cat,
+          value: grouped[cat]
+        }));
+        setCategoryData(formatted);
+
       } catch (e) {
         setExpenses([]);
         setTotal(0);
+        setCategoryData([]);
       }
     }
     fetchExpenses();
   }, []);
 
+  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#845EC2', '#D65DB1'];
+
   return (
     <div className="page-container">
       <div className="card">
-     <h1>{username && <p style={{ fontWeight: 600, marginBottom: 20 }}>Welcome, <b>{username}</b>!</p>}</h1> 
+        <h1>{username && <p style={{ fontWeight: 600, marginBottom: 20 }}>Welcome, <b>{username}</b>!</p>}</h1>
         <h2>Dashboard</h2>
+
+        {/* Total Spent */}
         <div style={{
           background: "#fff",
           padding: "18px 20px",
@@ -41,15 +61,35 @@ export default function Dashboard({ username }) {
           </p>
         </div>
 
-        {/* CHART PLACEHOLDER */}
+        {/* Spending by Category Chart */}
         <div style={{ background: "#fff", borderRadius: 13, padding: 18, margin: "0 0 28px 0" }}>
-          <h3 style={{ margin: "0 0 16px 0" }}>Spending by Category (Chart)</h3>
-          <div style={{ height: 180, background: "#B8E3E9", borderRadius: 9, lineHeight: '180px', color: '#4F7C82', textAlign: "center" }}>
-            {/* Use Chart.js or Recharts later */}
-            [Insert Chart Here]
-          </div>
+          <h3 style={{ margin: "0 0 16px 0" }}>Spending by Category</h3>
+          {categoryData.length > 0 ? (
+            <ResponsiveContainer width="100%" height={300}>
+              <PieChart>
+                <Pie
+                  data={categoryData}
+                  dataKey="value"
+                  nameKey="name"
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={100}
+                  label
+                >
+                  {categoryData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip />
+                <Legend />
+              </PieChart>
+            </ResponsiveContainer>
+          ) : (
+            <p style={{ textAlign: "center", color: "#666" }}>No data to display</p>
+          )}
         </div>
 
+        {/* Recent Expenses */}
         <h3>Recent Expenses</h3>
         {expenses.length === 0 && <p>No expenses yet.</p>}
         <ul style={{ padding: 0, listStyle: 'none' }}>

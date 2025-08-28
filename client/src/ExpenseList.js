@@ -15,7 +15,45 @@ export default function ExpenseList() {
         headers: { Authorization: `Bearer ${token}` }
       });
       setExpenses(res.data);
-    } catch (err) { setExpenses([]); }
+    } catch (err) {
+      setExpenses([]);
+    }
+  }
+
+  async function handleDelete(id) {
+    const token = localStorage.getItem('token');
+    if (!window.confirm("Are you sure you want to delete this expense?")) return;
+    try {
+      await axios.delete(`http://localhost:5000/api/expenses/${id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setExpenses(expenses.filter(exp => exp._id !== id)); // remove from UI
+    } catch (err) {
+      console.error("Error deleting expense", err);
+    }
+  }
+
+  async function handleEdit(expense) {
+    const token = localStorage.getItem('token');
+
+    // Simple edit using prompt (replace with a form/modal later if you want)
+    const newDescription = prompt("Edit description:", expense.description);
+    if (newDescription === null) return; // cancel
+    const newAmount = prompt("Edit amount:", expense.amount);
+    if (newAmount === null || isNaN(Number(newAmount))) return;
+
+    try {
+      const res = await axios.put(
+        `http://localhost:5000/api/expenses/${expense._id}`,
+        { ...expense, description: newDescription, amount: Number(newAmount) },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      // update local state with edited expense
+      setExpenses(expenses.map(exp => exp._id === expense._id ? res.data : exp));
+    } catch (err) {
+      console.error("Error editing expense", err);
+    }
   }
 
   function filteredExpenses() {
@@ -25,7 +63,6 @@ export default function ExpenseList() {
     );
   }
 
-  // For actual projects, also add edit/delete logic here
   return (
     <div className="page-container">
       <div className="card">
@@ -54,9 +91,8 @@ export default function ExpenseList() {
                 <td>{exp.description}</td>
                 <td>₹{exp.amount}</td>
                 <td>
-                  {/* For now do not implement edit/delete, just show buttons */}
-                  <button className="action-btn">Edit</button>
-                  <button className="action-btn">Delete</button>
+                  <button className="action-btn" onClick={() => handleEdit(exp)}>Edit</button>
+                  <button className="action-btn" onClick={() => handleDelete(exp._id)}>Delete</button>
                 </td>
               </tr>
             ))}
