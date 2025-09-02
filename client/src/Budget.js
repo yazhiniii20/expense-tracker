@@ -10,15 +10,17 @@ export default function Budget() {
   useEffect(() => {
     async function fetchData() {
       const token = localStorage.getItem('token');
-      // Fetch user's budget
       try {
-        const bRes = await axios.get('http://localhost:5000/api/budget', { headers: { Authorization: `Bearer ${token}` } });
+        const bRes = await axios.get('http://localhost:5000/api/budget', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
         setBudget(bRes.data?.budget || 0);
         setInput(bRes.data?.budget?.toString() || '');
       } catch {}
-      // Fetch total expenses
       try {
-        const eRes = await axios.get('http://localhost:5000/api/expenses', { headers: { Authorization: `Bearer ${token}` } });
+        const eRes = await axios.get('http://localhost:5000/api/expenses', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
         setSpent(eRes.data.reduce((sum, exp) => sum + exp.amount, 0));
       } catch {}
     }
@@ -29,15 +31,23 @@ export default function Budget() {
     e.preventDefault();
     const token = localStorage.getItem('token');
     try {
-      await axios.post('http://localhost:5000/api/budget', { budget: Number(input) }, { headers: { Authorization: `Bearer ${token}` } });
-      setBudget(input);
+      await axios.post(
+        'http://localhost:5000/api/budget',
+        { budget: Number(input) },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setBudget(Number(input));
     } catch {}
   }
 
+  const remaining = Math.max(budget - spent, 0); // prevent negative
+
   return (
     <div className="page-container">
+      {/* Single Card for Budget + Remaining */}
       <div className="card">
         <h2>Monthly Budget</h2>
+
         <form onSubmit={handleSaveBudget} style={{ marginBottom: 25 }}>
           <input
             className="input"
@@ -49,7 +59,11 @@ export default function Budget() {
           />
           <button className="btn" type="submit">Save Budget</button>
         </form>
-        <p>Spent: <b>₹{spent}</b> / Budget: <b>₹{budget}</b></p>
+
+        <p>
+          Spent: <b>₹{spent}</b> / Budget: <b>₹{budget}</b>
+        </p>
+
         <div className="progress-bar-bg" style={{ width: 320, maxWidth: "97%" }}>
           <div
             className="progress-bar-fill"
@@ -58,7 +72,24 @@ export default function Budget() {
             }}
           ></div>
         </div>
-        {budget > 0 && spent > budget && <p style={{ color: '#bb2222', fontWeight: 600 }}>Budget exceeded!</p>}
+
+        {budget > 0 && spent > budget && (
+          <p style={{ color: '#bb2222', fontWeight: 600 }}>Budget exceeded!</p>
+        )}
+
+        {/* Remaining Amount Inside Same Card */}
+        <div style={{ marginTop: 20 }}>
+          <h3>Remaining Amount</h3>
+          <p
+            style={{
+              fontSize: 18,
+              fontWeight: 600,
+              color: "#bb2222" // Always red
+            }}
+          >
+            ₹{remaining}
+          </p>
+        </div>
       </div>
     </div>
   );
